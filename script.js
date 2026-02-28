@@ -1,11 +1,10 @@
 /**
- * TripSplit Premium Core Engine v18.0 - OFFLINE ELITE EDITION
+ * TripSplit Premium Core Engine v19.0 - OFFLINE & AUTH STABLE
  * -----------------------------------------------------------
  * Features: 
+ * - Fixed Login (Redirect mode for PWA stability)
+ * - Persistent Auth (Session stays active offline)
  * - Disk-based Persistence (Works with zero internet)
- * - Automatic Cloud Sync on reconnection
- * - Async-safe Form Handling
- * - Premium Profile Dashboard & Admin Logic
  */
 
 // --- 1. CONFIGURATION & STATE ---
@@ -29,18 +28,28 @@ let currentFilters = { type: 'all', member: 'all' };
 if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-// --- CRITICAL OFFLINE ENABLE ---
-// This enables local data storage so the app works in Katra without signal.
+// ENABLE OFFLINE DATA
 db.app.database().setPersistenceEnabled(true); 
 
 const auth = firebase.auth();
 const provider = new firebase.auth.GoogleAuthProvider();
 
-// --- 2. AUTHENTICATION & PROFILE SYNC ---
+// --- 2. AUTHENTICATION (STABLE REDIRECT MODE) ---
+
+// Force the browser to remember the login "Locally" (stays logged in offline)
+auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
 
 document.getElementById('google-login-btn').onclick = () => {
-    auth.signInWithPopup(provider).catch(err => alert("Login Error: " + err.message));
+    // SWITCHED TO REDIRECT: Much more stable for PWA and Mobile
+    auth.signInWithRedirect(provider);
 };
+
+// This handles the result after the redirect comes back
+auth.getRedirectResult().catch(err => {
+    if (err.code !== 'auth/no-auth-event') {
+        alert("Login Error: " + err.message);
+    }
+});
 
 window.handleLogout = () => {
     if(confirm("Are you sure you want to sign out?")) {
@@ -53,17 +62,14 @@ auth.onAuthStateChanged((user) => {
     if (user) {
         overlay.style.display = 'none';
         
-        // Sidebar UI
         document.getElementById('user-name').innerText = user.displayName;
         document.getElementById('user-photo').src = user.photoURL;
 
-        // Mobile UI
         const mobileName = document.getElementById('user-name-mobile');
         const mobilePhoto = document.getElementById('user-photo-mobile');
         if (mobileName) mobileName.innerText = user.displayName;
         if (mobilePhoto) mobilePhoto.src = user.photoURL;
 
-        // Dashboard Profile UI
         const pName = document.getElementById('main-profile-name');
         const pEmail = document.getElementById('main-profile-email');
         const pPhoto = document.getElementById('main-profile-photo');
@@ -157,7 +163,7 @@ function refreshUI() {
     if (document.getElementById('pending-settle-val')) document.getElementById('pending-settle-val').innerText = expenses.length;
 }
 
-// --- 5. EXPENSE SAVING LOGIC (OFFLINE COMPATIBLE) ---
+// --- 5. EXPENSE SAVING LOGIC ---
 
 document.getElementById('expense-form').onsubmit = async (e) => {
     e.preventDefault();
@@ -180,7 +186,6 @@ document.getElementById('expense-form').onsubmit = async (e) => {
 
         const shareAmount = amount / participants.length;
 
-        // Firebase .push() works instantly locally when persistence is on
         await db.ref('expenses').push({
             title,
             amount,
@@ -198,7 +203,6 @@ document.getElementById('expense-form').onsubmit = async (e) => {
 
     } catch (err) {
         console.error("Firebase Save Error:", err);
-        alert("Error saving. Data will sync when online.");
     } finally {
         submitBtn.disabled = false;
         submitBtn.innerHTML = originalText;
