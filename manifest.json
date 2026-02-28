@@ -1,13 +1,19 @@
 {
   "name": "TripSplit Premium",
   "short_name": "TripSplit",
-  "start_url": "./index.html",
+  "start_url": "index.html",
   "display": "standalone",
   "background_color": "#f8fafc",
   "theme_color": "#2563eb",
+  "description": "Premium Trip Manager for Katra 2026",
   "icons": [
     {
-      "src": "https://cdn-icons-png.flaticon.com/512/785/785116.png",
+      "src": "https://cdn-icons-png.flaticon.com/512/784/784631.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/784/784631.png",
       "sizes": "512x512",
       "type": "image/png"
     }
