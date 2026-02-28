@@ -1,10 +1,10 @@
 /**
- * TripSplit Premium Core Engine v19.0 - OFFLINE & AUTH STABLE
+ * TripSplit Premium Core Engine v20.0 - ULTIMATE KATRA EDITION
  * -----------------------------------------------------------
- * Features: 
- * - Fixed Login (Redirect mode for PWA stability)
- * - Persistent Auth (Session stays active offline)
- * - Disk-based Persistence (Works with zero internet)
+ * Fixes: 
+ * - Login Handshake (RedirectResult handler moved to top)
+ * - PWA Auth Persistence (Stays logged in for the whole trip)
+ * - Zero-Internet local storage enabled
  */
 
 // --- 1. CONFIGURATION & STATE ---
@@ -21,35 +21,50 @@ const firebaseConfig = {
 let members = [];
 let expenses = [];
 let settledHistory = [];
-let lastLogsData = []; 
 let currentFilters = { type: 'all', member: 'all' };
 
 // Initialize Firebase
 if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-// ENABLE OFFLINE DATA
+// --- OFFLINE DATA STORAGE ---
+// Saves everything to the phone's disk so it works without 4G/5G
 db.app.database().setPersistenceEnabled(true); 
 
 const auth = firebase.auth();
 const provider = new firebase.auth.GoogleAuthProvider();
 
-// --- 2. AUTHENTICATION (STABLE REDIRECT MODE) ---
+// --- 2. AUTHENTICATION & PERSISTENCE ---
 
-// Force the browser to remember the login "Locally" (stays logged in offline)
+// Crucial: Keeps you logged in even if the phone restarts in a no-network area
 auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
 
-document.getElementById('google-login-btn').onclick = () => {
-    // SWITCHED TO REDIRECT: Much more stable for PWA and Mobile
-    auth.signInWithRedirect(provider);
-};
-
-// This handles the result after the redirect comes back
-auth.getRedirectResult().catch(err => {
-    if (err.code !== 'auth/no-auth-event') {
-        alert("Login Error: " + err.message);
+// This "Handshake" catches the user returning from the Google Login screen
+auth.getRedirectResult().then((result) => {
+    if (result.user) {
+        console.log("Authenticated as:", result.user.displayName);
+    }
+}).catch((error) => {
+    console.error("Auth Error:", error.message);
+    if(error.code === 'auth/network-request-failed') {
+        alert("Connection lost. Please try logging in when you have a stable signal.");
     }
 });
+
+document.getElementById('google-login-btn').onclick = () => {
+    const btn = document.getElementById('google-login-btn');
+    btn.innerHTML = "Connecting...";
+    btn.style.opacity = "0.7";
+    
+    // Check internet before attempting first-time login
+    if (!navigator.onLine) {
+        alert("First-time login requires internet. Once logged in, you can use it offline for the whole trip.");
+        btn.innerHTML = "Continue with Google";
+        btn.style.opacity = "1";
+        return;
+    }
+    auth.signInWithRedirect(provider);
+};
 
 window.handleLogout = () => {
     if(confirm("Are you sure you want to sign out?")) {
@@ -62,6 +77,7 @@ auth.onAuthStateChanged((user) => {
     if (user) {
         overlay.style.display = 'none';
         
+        // Update All UI Layers
         document.getElementById('user-name').innerText = user.displayName;
         document.getElementById('user-photo').src = user.photoURL;
 
@@ -77,6 +93,7 @@ auth.onAuthStateChanged((user) => {
         if (pEmail) pEmail.innerText = user.email;
         if (pPhoto) pPhoto.src = user.photoURL;
         
+        // Admin Access for Akhil
         if (user.email === "akhilgoel985@gmail.com") {
             const badge = document.getElementById('admin-badge');
             if (badge) badge.classList.remove('hidden');
@@ -163,7 +180,7 @@ function refreshUI() {
     if (document.getElementById('pending-settle-val')) document.getElementById('pending-settle-val').innerText = expenses.length;
 }
 
-// --- 5. EXPENSE SAVING LOGIC ---
+// --- 5. EXPENSE SAVING LOGIC (STABLE OFFLINE) ---
 
 document.getElementById('expense-form').onsubmit = async (e) => {
     e.preventDefault();
@@ -186,6 +203,7 @@ document.getElementById('expense-form').onsubmit = async (e) => {
 
         const shareAmount = amount / participants.length;
 
+        // Offline storage handles the push immediately
         await db.ref('expenses').push({
             title,
             amount,
@@ -202,7 +220,7 @@ document.getElementById('expense-form').onsubmit = async (e) => {
         e.target.reset();
 
     } catch (err) {
-        console.error("Firebase Save Error:", err);
+        console.error("Save failed:", err);
     } finally {
         submitBtn.disabled = false;
         submitBtn.innerHTML = originalText;
