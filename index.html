@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TripSplit | Premium Trip Manager</title>
+    
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="auth-overlay">
+        <div class="auth-card">
+            <div class="logo-box" style="margin: 0 auto 1.5rem;"><i data-lucide="plane"></i></div>
+            <h2 style="font-weight: 900; margin-bottom: 0.5rem;">Welcome to TripSplit</h2>
+            <p style="color: var(--text-muted); margin-bottom: 2rem; font-size: 0.9rem;">Sign in to manage the Katra Trip 2026</p>
+            
+            <button class="btn" id="google-login-btn" style="width: 100%; justify-content: center; gap: 15px; border: 2px solid var(--border); background: white;">
+                <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/><path fill="none" d="M0 0h48v48H0z"/></svg>
+                Continue with Google
+            </button>
+        </div>
+    </div>
+
+    <div id="toast-container"></div>
+
+    <aside class="sidebar">
+        <div class="logo">
+            <div class="logo-box"><i data-lucide="plane"></i></div> 
+            <span>TripSplit</span>
+        </div>
+
+        <div id="user-info-sidebar" style="margin-bottom: 2rem; padding: 12px; background: var(--bg-main); border-radius: 24px; display: flex; align-items: center; gap: 12px; border: 1px solid var(--border-light); cursor: pointer;" onclick="showSection('profile')">
+            <img id="user-photo" src="" style="width: 42px; height: 42px; border-radius: 50%; border: 2px solid white; box-shadow: var(--shadow-sm);">
+            <div style="overflow: hidden;">
+                <p id="user-name" style="font-weight: 800; font-size: 0.85rem; white-space: nowrap; text-overflow: ellipsis; color: var(--text-main);"></p>
+                <p style="color: var(--primary); font-size: 0.65rem; font-weight: 700; margin-top: 2px;">View Profile</p>
+            </div>
+        </div>
+
+        <nav>
+            <button class="nav-link active" onclick="showSection('dashboard')">
+                <i data-lucide="layout-grid"></i> Dashboard
+            </button>
+            <button class="nav-link" onclick="showSection('expenses')">
+                <i data-lucide="receipt"></i> Expenses
+            </button>
+            <button class="nav-link" onclick="showSection('members')">
+                <i data-lucide="users"></i> Members
+            </button>
+            <button class="nav-link" onclick="showSection('settlements')">
+                <i data-lucide="hand-coins"></i> Settlements
+            </button>
+        </nav>
+        
+        <div style="margin-top: auto; padding-top: 2rem;">
+            <button class="nav-link" onclick="triggerFullReset()" style="color: var(--danger);">
+                <i data-lucide="refresh-ccw"></i> Reset Trip
+            </button>
+        </div>
+    </aside>
+
+    <nav class="mobile-nav">
+        <button class="m-nav-item active" onclick="showSection('dashboard')">
+            <i data-lucide="layout-grid"></i><span>Home</span>
+        </button>
+        <button class="m-nav-item" onclick="showSection('expenses')">
+            <i data-lucide="receipt"></i><span>Bills</span>
+        </button>
+        <button class="m-nav-item" onclick="showSection('members')">
+            <i data-lucide="users"></i><span>Trip</span>
+        </button>
+        <button class="m-nav-item" onclick="showSection('settlements')">
+            <i data-lucide="hand-coins"></i><span>Settle</span>
+        </button>
+        <button class="m-nav-item" id="mobile-action-btn" onclick="openModal('expenseModal')">
+            <i data-lucide="plus-circle" style="color: var(--primary);"></i><span>Add</span>
+        </button>
+    </nav>
+
+    <main class="main-content">
+        <div class="mobile-profile-header" style="display: none;" onclick="showSection('profile')">
+            <div class="m-user-info" style="display: flex; align-items: center; gap: 10px;">
+                <img id="user-photo-mobile" src="" style="width: 35px; height: 35px; border-radius: 50%;">
+                <span id="user-name-mobile" style="font-weight: 850; font-size: 0.9rem;"></span>
+            </div>
+            <i data-lucide="chevron-right" size="18" style="color: var(--text-light);"></i>
+        </div>
+
+        <header class="header">
+            <div class="header-text">
+                <h1 id="section-title">Dashboard</h1>
+                <p id="trip-subtitle" style="color: var(--text-muted); font-weight: 600; font-size: 0.9rem;">Katra Trip 2026</p>
+            </div>
+            <div class="header-actions" id="desktop-action-container"></div>
+        </header>
+
+        <section id="dashboard-section" class="section-content">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <p class="stat-label">Spent</p>
+                    <div class="stat-value" id="total-expense-val" style="color: var(--primary);">₹0</div>
+                </div>
+                <div class="stat-card">
+                    <p class="stat-label">Active Debts</p>
+                    <div class="stat-value" id="pending-settle-val">0</div>
+                </div>
+                <div class="stat-card" onclick="showSection('members')" style="cursor:pointer; background: var(--primary-soft); border-color: #bfdbfe;">
+                    <p class="stat-label" style="color: var(--primary);">Group</p>
+                    <div class="stat-value" style="color: var(--primary);"><i data-lucide="users"></i></div>
+                </div>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="panel">
+                    <div class="panel-title"><i data-lucide="zap" style="color: #f59e0b;"></i> Quick Settle</div>
+                    <div id="settlement-list"></div>
+                </div>
+
+                <div class="panel hide-small">
+                    <div class="panel-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                        <div class="panel-title" style="margin-bottom: 0;"><i data-lucide="activity"></i> Recent Activity</div>
+                        <div class="filter-wrapper" style="position: relative;">
+                            <button class="btn btn-white" onclick="toggleFilter()" id="filter-trigger" style="padding: 8px 12px; font-size: 0.8rem;">
+                                <i data-lucide="filter" size="14"></i> <span>Filter</span>
+                            </button>
+                            <div id="filter-panel" class="filter-panel hidden">
+                                <div class="filter-group">
+                                    <label>Type</label>
+                                    <select id="filter-type" onchange="applyFilters()">
+                                        <option value="all">All</option>
+                                        <option value="expense">Expenses</option>
+                                        <option value="join">Members</option>
+                                        <option value="settle">Settlements</option>
+                                    </select>
+                                </div>
+                                <div class="filter-group">
+                                    <label>Member</label>
+                                    <select id="filter-member" onchange="applyFilters()"><option value="all">Everyone</option></select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="activity-feed"></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="profile-section" class="section-content hidden">
+            <div class="profile-container">
+                <div class="profile-hero">
+                    <div class="profile-avatar-wrapper">
+                        <img id="main-profile-photo" src="" alt="Profile">
+                        <div class="online-indicator"></div>
+                    </div>
+                    <div class="profile-meta">
+                        <h2 id="main-profile-name">User Name</h2>
+                        <p id="main-profile-email">email@example.com</p>
+                        <div class="admin-badge hidden" id="admin-badge">Trip Admin</div>
+                    </div>
+                    <button onclick="handleLogout()" class="btn-signout-main">
+                        <i data-lucide="log-out"></i> Sign Out
+                    </button>
+                </div>
+
+                <div class="profile-stats-grid">
+                    <div class="p-stat-card">
+                        <div class="p-icon" style="background: var(--success-soft); color: var(--success);"><i data-lucide="trending-up"></i></div>
+                        <div class="p-info">
+                            <span class="p-label">Total Lent</span>
+                            <div class="p-val" id="profile-lent-val">₹0</div>
+                        </div>
+                    </div>
+                    <div class="p-stat-card">
+                        <div class="p-icon" style="background: var(--danger-soft); color: var(--danger);"><i data-lucide="trending-down"></i></div>
+                        <div class="p-info">
+                            <span class="p-label">Total Owed</span>
+                            <div class="p-val" id="profile-owed-val">₹0</div>
+                        </div>
+                    </div>
+                    <div class="p-stat-card">
+                        <div class="p-icon" style="background: var(--primary-soft); color: var(--primary);"><i data-lucide="wallet"></i></div>
+                        <div class="p-info">
+                            <span class="p-label">Net Balance</span>
+                            <div class="p-val" id="profile-balance-val">₹0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel" style="margin-top: 2rem;">
+                    <div class="panel-title"><i data-lucide="list-checks"></i> Personal Ledger</div>
+                    <div id="personal-ledger-list" class="detailed-grid"></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="expenses-section" class="section-content hidden">
+            <div class="table-container">
+                <table id="expenses-table">
+                    <thead>
+                        <tr>
+                            <th>Detail</th>
+                            <th class="hide-mobile">Payer</th>
+                            <th>Amount</th>
+                            <th>Category</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="expenses-tbody"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <section id="members-section" class="section-content hidden">
+            <div id="members-grid"></div>
+        </section>
+
+        <section id="settlements-section" class="section-content hidden">
+            <div class="panel">
+                <div class="panel-title"><i data-lucide="split" style="color: var(--primary);"></i> Transaction Breakdown</div>
+                <div id="detailed-settlement-view" class="detailed-grid"></div>
+            </div>
+
+            <div class="panel" style="margin-top: 2rem; border-top: 4px solid var(--success);">
+                <div class="panel-title"><i data-lucide="history" style="color: var(--success);"></i> Settlement History</div>
+                <div id="settled-history-view" class="history-list">
+                    <p style="text-align: center; color: var(--text-light); padding: 1rem;">No completed settlements yet.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div class="modal" id="expenseModal">
+        <div class="modal-content">
+            <div class="modal-handle"></div>
+            <h2 style="font-weight: 900; margin-bottom: 1.5rem;">Record Spending</h2>
+            <form id="expense-form">
+                <div class="input-group">
+                    <label>Description</label>
+                    <input type="text" id="exp-title" placeholder="e.g., Dinner at Katra" required>
+                </div>
+                <div class="input-row">
+                    <div class="input-group">
+                        <label>Amount (₹)</label>
+                        <input type="number" id="exp-amount" placeholder="0" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Category</label>
+                        <select id="exp-category">
+                            <option value="Food">Food</option>
+                            <option value="Travel">Travel</option>
+                            <option value="Stay">Stay</option>
+                            <option value="Others">Others</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>Who Paid?</label>
+                    <select id="exp-payer"></select>
+                </div>
+                <div class="input-group">
+                    <label>Split Between</label>
+                    <div id="split-participants" class="checkbox-grid"></div>
+                </div>
+                <div class="modal-btns">
+                    <button type="button" class="btn btn-white" onclick="closeModal('expenseModal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Activity</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal" id="userProfileModal">
+        <div class="modal-content">
+            <div class="modal-handle"></div>
+            <div id="user-profile-header"></div>
+            <div class="tab-container" style="margin-top: 1.5rem;">
+                <p class="stat-label">Transaction History</p>
+                <div id="user-transaction-history" class="history-list"></div>
+            </div>
+            <div class="modal-btns">
+                <button class="btn btn-primary" style="width: 100%; justify-content: center;" onclick="closeModal('userProfileModal')">Close View</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="memberModal">
+        <div class="modal-content">
+            <h2 style="font-weight: 900; margin-bottom: 1.5rem;">Add Trip Member</h2>
+            <div class="input-group">
+                <label>Friend's Name</label>
+                <input type="text" id="new-member-name" placeholder="Enter name...">
+            </div>
+            <div class="modal-btns">
+                <button class="btn btn-white" onclick="closeModal('memberModal')">Cancel</button>
+                <button class="btn btn-primary" onclick="submitNewMember()">Add to Group</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="custom-confirm-modal">
+        <div class="modal-content" style="max-width: 400px; text-align: center;">
+            <div style="background: #fee2e2; color: #ef4444; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.5rem;">
+                <i data-lucide="alert-triangle"></i>
+            </div>
+            <h3 style="margin-bottom: 10px; font-weight: 800;">Dangerous Action</h3>
+            <p id="confirm-message" style="color: var(--text-muted); margin-bottom: 2rem; font-size: 0.9rem;"></p>
+            <div class="modal-btns">
+                <button class="btn btn-white" id="confirm-cancel">Cancel</button>
+                <button class="btn btn-primary" id="confirm-proceed" style="background: #ef4444;">Delete Permanently</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
