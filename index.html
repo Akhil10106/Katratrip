@@ -3,99 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>TripSplit | Premium Trip Manager</title>
+    <title>TripCart | Platinum Luxury Edition</title>
     
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#2563eb">
+    <meta name="theme-color" content="#1e293b">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <script src="https://unpkg.com/lucide@latest"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html-to-image/1.11.11/html-to-image.min.js"></script>
+    
     <link rel="stylesheet" href="style.css">
-    <style>
-        /* Platinum UI Enhancements */
-        .admin-badge {
-            animation: pulse-blue 2s infinite;
-            border: 1px solid var(--primary);
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.7rem;
-            font-weight: 900;
-            color: var(--primary);
-            display: inline-block;
-        }
-
-        @keyframes pulse-blue {
-            0% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.4); }
-            70% { box-shadow: 0 0 0 10px rgba(37, 99, 235, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0); }
-        }
-
-        .bill-date {
-            font-size: 0.7rem;
-            color: var(--text-light);
-            font-weight: 600;
-            display: block;
-        }
-
-        .stat-card {
-            backdrop-filter: blur(5px);
-            background: rgba(255, 255, 255, 0.8);
-        }
-
-        /* Empty State Styling */
-        .empty-state {
-            text-align: center;
-            padding: 3rem;
-            color: var(--text-light);
-        }
-    </style>
 </head>
-<body>
+<body class="bg-dashboard">
 
-    <div id="auth-overlay">
-        <div class="auth-card">
-            <div class="logo-box" style="margin: 0 auto 1.5rem;"><i data-lucide="plane"></i></div>
-            <h2 style="font-weight: 900; margin-bottom: 0.5rem;">Welcome to TripSplit</h2>
-            <p style="color: var(--text-muted); margin-bottom: 2rem; font-size: 0.9rem;">Sign in to manage the Katra Trip 2026</p>
-            
-            <button class="btn" id="google-login-btn" style="width: 100%; justify-content: center; gap: 15px; border: 2px solid var(--border); background: white;">
-                <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/><path fill="none" d="M0 0h48v48H0z"/></svg>
-                Continue with Google
+    <div id="auth-overlay" class="modal-overlay" style="display: none;">
+        <div class="auth-card luxury-glass">
+            <div class="logo-box primary-gradient"><i data-lucide="shopping-cart"></i></div>
+            <h2>TripCart Platinum</h2>
+            <p>Your high-fidelity companion for the Katra Trek 2026</p>
+            <button class="btn btn-primary" id="setup-trip-btn" style="width: 100%; margin-top: 1rem;">
+                <i data-lucide="play"></i> Initialize Expedition
             </button>
         </div>
     </div>
 
-    <div class="modal" id="resetConfirmModal">
-        <div class="modal-content" style="text-align: center; border-top: 5px solid var(--danger);">
-            <div class="logo-box" style="background: var(--danger-soft); color: var(--danger); margin: 0 auto 1rem;">
-                <i data-lucide="alert-octagon"></i>
-            </div>
-            <h2 style="font-weight: 900;">Reset Entire Trip?</h2>
-            <p style="color: var(--text-muted); margin: 1rem 0 2rem;">This will permanently delete all expenses, members, and history for the Katra Trip 2026. This action cannot be undone.</p>
-            <div class="modal-btns">
-                <button class="btn btn-white" onclick="closeModal('resetConfirmModal')">Cancel</button>
-                <button class="btn" style="background: var(--danger); color: white;" onclick="executeFullReset()">Yes, Delete All</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="toast-container"></div>
-
-    <aside class="sidebar">
+    <aside class="sidebar luxury-glass">
         <div class="logo">
-            <div class="logo-box"><i data-lucide="plane"></i></div> 
-            <span>TripSplit</span>
-        </div>
-
-        <div id="user-info-sidebar" style="margin-bottom: 2rem; padding: 12px; background: var(--bg-main); border-radius: 24px; display: flex; align-items: center; gap: 12px; border: 1px solid var(--border-light); cursor: pointer;" onclick="showSection('profile')">
-            <img id="user-photo" src="" style="width: 42px; height: 42px; border-radius: 50%; border: 2px solid white; box-shadow: var(--shadow-sm);">
-            <div style="overflow: hidden;">
-                <p id="user-name" style="font-weight: 800; font-size: 0.85rem; white-space: nowrap; text-overflow: ellipsis; color: var(--text-main);"></p>
-                <p style="color: var(--primary); font-size: 0.65rem; font-weight: 700; margin-top: 2px;">View Profile</p>
-            </div>
+            <div class="logo-box primary-gradient"><i data-lucide="shopping-cart"></i></div> 
+            <span>TripCart</span>
         </div>
 
         <nav>
@@ -105,266 +44,209 @@
             <button class="nav-link" onclick="showSection('expenses')">
                 <i data-lucide="receipt"></i> Expenses
             </button>
+            <button class="nav-link" onclick="showSection('balance')">
+                <i data-lucide="scale"></i> Split Sheet
+            </button>
             <button class="nav-link" onclick="showSection('members')">
-                <i data-lucide="users"></i> Members
+                <i data-lucide="users"></i> Squad
             </button>
-            <button class="nav-link" onclick="showSection('settlements')">
-                <i data-lucide="hand-coins"></i> Settlements
-            </button>
-            
-            <button class="nav-link" id="install-btn-desktop" style="color: var(--success); display: none;">
-                <i data-lucide="download-cloud"></i> Install App
+            <button class="nav-link" onclick="showSection('profile')">
+                <i data-lucide="settings"></i> System
             </button>
         </nav>
         
-        <div style="margin-top: auto; padding-top: 2rem;">
-            <button class="nav-link" onclick="triggerFullReset()" style="color: var(--danger);">
-                <i data-lucide="refresh-ccw"></i> Reset Trip
-            </button>
+        <div class="sidebar-footer">
+            <p>TripCart V25.0 Platinum</p>
         </div>
     </aside>
 
-    <nav class="mobile-nav">
-        <button class="m-nav-item active" onclick="showSection('dashboard')">
-            <i data-lucide="layout-grid"></i><span>Home</span>
-        </button>
-        <button class="m-nav-item" onclick="showSection('expenses')">
-            <i data-lucide="receipt"></i><span>Bills</span>
-        </button>
-        <button class="m-nav-item" onclick="showSection('members')">
-            <i data-lucide="users"></i><span>Trip</span>
-        </button>
-        <button class="m-nav-item" onclick="showSection('settlements')">
-            <i data-lucide="hand-coins"></i><span>Settle</span>
-        </button>
-        <button class="m-nav-item" id="install-btn-mobile" style="display: none;">
-            <i data-lucide="download-cloud" style="color: var(--success);"></i><span>App</span>
-        </button>
-        <button class="m-nav-item" id="mobile-action-btn" onclick="openModal('expenseModal')">
-            <i data-lucide="plus-circle" style="color: var(--primary);"></i><span>Add</span>
-        </button>
-    </nav>
-
     <main class="main-content">
-        <div class="mobile-profile-header" style="display: none;" onclick="showSection('profile')">
-            <div class="m-user-info" style="display: flex; align-items: center; gap: 10px;">
-                <img id="user-photo-mobile" src="" style="width: 35px; height: 35px; border-radius: 50%;">
-                <span id="user-name-mobile" style="font-weight: 850; font-size: 0.9rem;"></span>
-            </div>
-            <i data-lucide="chevron-right" size="18" style="color: var(--text-light);"></i>
-        </div>
-
         <header class="header">
             <div class="header-text">
                 <h1 id="section-title">Dashboard</h1>
-                <p id="trip-subtitle" style="color: var(--text-muted); font-weight: 600; font-size: 0.9rem;">Katra Trip 2026</p>
+                <p id="trip-subtitle">Katra Expedition 2026</p>
             </div>
             <div class="header-actions" id="desktop-action-container"></div>
         </header>
 
         <section id="dashboard-section" class="section-content">
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <p class="stat-label">Spent</p>
-                    <div class="stat-value" id="total-expense-val" style="color: var(--primary);">₹0</div>
+            <div class="stats-grid premium-quad-grid">
+                <div class="stat-card luxury-card primary-gradient">
+                    <div class="card-glass-overlay"></div>
+                    <p class="stat-label">Total Spend</p>
+                    <div class="stat-value" id="total-expense-val">₹0</div>
+                    <div class="card-footer-mini">TripCart Verified</div>
                 </div>
-                <div class="stat-card">
-                    <p class="stat-label">Active Debts</p>
-                    <div class="stat-value" id="pending-settle-val">0</div>
+
+                <div class="stat-card luxury-card">
+                    <div class="card-header-flex">
+                        <p class="stat-label">Daily Velocity</p>
+                        <i data-lucide="trending-up" class="icon-tiny text-get"></i>
+                    </div>
+                    <div class="stat-value-mid" id="daily-velocity-val">₹0</div>
+                    <div class="stat-sub-text">Average per day</div>
+                    <div class="sparkline-mini">
+                        <div class="spark-dot"></div>
+                        <div class="spark-dot"></div>
+                        <div class="spark-dot active"></div>
+                    </div>
                 </div>
-                <div class="stat-card" onclick="showSection('members')" style="cursor:pointer; background: var(--primary-soft); border-color: #bfdbfe;">
-                    <p class="stat-label" style="color: var(--primary);">Group</p>
-                    <div class="stat-value" style="color: var(--primary);"><i data-lucide="users"></i></div>
+
+                <div class="stat-card luxury-card">
+                    <p class="stat-label">Lead Spender</p>
+                    <div class="spender-profile">
+                        <div class="mini-avatar primary-gradient" id="top-spender-avatar">?</div>
+                        <div class="stat-value-sm" id="top-spender-name">None</div>
+                    </div>
+                </div>
+
+                <div class="stat-card luxury-card action-card" onclick="openModal('expenseModal')">
+                    <div class="action-circle primary-gradient">
+                        <i data-lucide="plus"></i>
+                    </div>
+                    <p class="stat-label">Quick Entry</p>
                 </div>
             </div>
 
-            <div class="dashboard-grid">
-                <div class="panel">
-                    <div class="panel-title"><i data-lucide="zap" style="color: #f59e0b;"></i> Quick Settle</div>
-                    <div id="settlement-list"></div>
-                </div>
-
-                <div class="panel hide-small">
-                    <div class="panel-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-                        <div class="panel-title" style="margin-bottom: 0;"><i data-lucide="activity"></i> Recent Activity</div>
-                        <div class="filter-wrapper" style="position: relative;">
-                            <button class="btn btn-white" onclick="toggleFilter()" id="filter-trigger" style="padding: 8px 12px; font-size: 0.8rem;">
-                                <i data-lucide="filter" size="14"></i> <span>Filter</span>
-                            </button>
-                            <div id="filter-panel" class="filter-panel hidden">
-                                <div class="filter-group">
-                                    <label>Type</label>
-                                    <select id="filter-type" onchange="applyFilters()">
-                                        <option value="all">All</option>
-                                        <option value="expense">Expenses</option>
-                                        <option value="join">Members</option>
-                                        <option value="settle">Settlements</option>
-                                    </select>
-                                </div>
-                                <div class="filter-group">
-                                    <label>Member</label>
-                                    <select id="filter-member" onchange="applyFilters()"><option value="all">Everyone</option></select>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div id="activity-feed"></div>
-                </div>
-            </div>
-        </section>
-
-        <section id="profile-section" class="section-content hidden">
-            <div class="profile-container">
-                <div class="profile-hero">
-                    <div class="profile-avatar-wrapper">
-                        <img id="main-profile-photo" src="" alt="Profile">
-                        <div class="online-indicator"></div>
-                    </div>
-                    <div class="profile-meta">
-                        <h2 id="main-profile-name">User Name</h2>
-                        <p id="main-profile-email">email@example.com</p>
-                        <div class="admin-badge hidden" id="admin-badge">Trip Admin</div>
-                    </div>
-                    <button onclick="handleLogout()" class="btn-signout-main">
-                        <i data-lucide="log-out"></i> Sign Out
-                    </button>
-                </div>
-
-                <div class="profile-stats-grid">
-                    <div class="p-stat-card">
-                        <div class="p-icon" style="background: var(--success-soft); color: var(--success);"><i data-lucide="trending-up"></i></div>
-                        <div class="p-info">
-                            <span class="p-label">Total Lent</span>
-                            <div class="p-val" id="profile-lent-val">₹0</div>
-                        </div>
-                    </div>
-                    <div class="p-stat-card">
-                        <div class="p-icon" style="background: var(--danger-soft); color: var(--danger);"><i data-lucide="trending-down"></i></div>
-                        <div class="p-info">
-                            <span class="p-label">Total Owed</span>
-                            <div class="p-val" id="profile-owed-val">₹0</div>
-                        </div>
-                    </div>
-                    <div class="p-stat-card">
-                        <div class="p-icon" style="background: var(--primary-soft); color: var(--primary);"><i data-lucide="wallet"></i></div>
-                        <div class="p-info">
-                            <span class="p-label">Net Balance</span>
-                            <div class="p-val" id="profile-balance-val">₹0</div>
-                        </div>
+            <div class="panel activity-panel luxury-shadow">
+                <div class="panel-header">
+                    <div class="panel-title">
+                        <div class="pulse-icon"></div>
+                        <span>Live Activity Feed</span>
                     </div>
                 </div>
-
-                <div class="panel" style="margin-top: 2rem;">
-                    <div class="panel-title"><i data-lucide="list-checks"></i> Personal Ledger</div>
-                    <div id="personal-ledger-list" class="detailed-grid"></div>
+                <div class="activity-scroll-container">
+                    <div id="activity-feed" class="activity-list timeline-style">
+                        <p class="empty-msg">Waiting for TripCart telemetry...</p>
+                    </div>
                 </div>
             </div>
         </section>
 
         <section id="expenses-section" class="section-content hidden">
-            <div class="table-container">
+            <div class="table-container luxury-glass">
                 <table id="expenses-table">
                     <thead>
-                        <tr>
-                            <th>Detail</th>
-                            <th class="hide-mobile">Payer</th>
-                            <th>Amount</th>
-                            <th>Category</th>
-                            <th>Action</th>
-                        </tr>
+                        <tr><th>Bill Detail</th><th class="hide-mobile">Payer</th><th>Amount</th><th>Category</th><th>Action</th></tr>
                     </thead>
                     <tbody id="expenses-tbody"></tbody>
                 </table>
             </div>
         </section>
 
+        <section id="balance-section" class="section-content hidden"><div id="balance-grid" class="balance-grid"></div></section>
         <section id="members-section" class="section-content hidden">
-            <div id="members-grid"></div>
-        </section>
-
-        <section id="settlements-section" class="section-content hidden">
-            <div class="panel">
-                <div class="panel-title"><i data-lucide="split" style="color: var(--primary);"></i> Transaction Breakdown</div>
-                <div id="detailed-settlement-view" class="detailed-grid"></div>
+            <div class="group-header-info">
+                <div class="group-meta"><span class="member-count-badge" id="member-count-val">0 Members</span><p>Managing the Katra core squad</p></div>
             </div>
-
-            <div class="panel" style="margin-top: 2rem; border-top: 4px solid var(--success);">
-                <div class="panel-title"><i data-lucide="history" style="color: var(--success);"></i> Settlement History</div>
-                <div id="settled-history-view" class="history-list">
-                    <p style="text-align: center; color: var(--text-light); padding: 1rem;">No completed settlements yet.</p>
-                </div>
-            </div>
+            <div id="members-grid" class="premium-member-grid"></div>
         </section>
+        <section id="profile-section" class="section-content hidden"><div class="profile-container"></div></section>
     </main>
 
+    <nav class="mobile-nav luxury-glass">
+        <button class="m-nav-item active" onclick="showSection('dashboard')"><i data-lucide="layout-grid"></i><span>Home</span></button>
+        <button class="m-nav-item" onclick="showSection('expenses')"><i data-lucide="receipt"></i><span>Bills</span></button>
+        <button class="m-nav-item" onclick="showSection('balance')"><i data-lucide="scale"></i><span>Split</span></button>
+        <button class="m-nav-item" onclick="showSection('members')"><i data-lucide="users"></i><span>Squad</span></button>
+        <button class="m-nav-item" onclick="showSection('profile')"><i data-lucide="settings"></i><span>System</span></button>
+    </nav>
+
     <div class="modal" id="expenseModal">
-        <div class="modal-content">
-            <div class="modal-handle"></div>
-            <h2 style="font-weight: 900; margin-bottom: 1.5rem;">Record Spending</h2>
-            <form id="expense-form">
-                <div class="input-group">
-                    <label>Description</label>
-                    <input type="text" id="exp-title" placeholder="e.g., Dinner at Katra" required>
+        <div class="modal-content luxury-solid-card">
+            <div class="modal-handle-bar"></div>
+            
+            <div class="modal-smart-header">
+                <div class="modal-title-zone">
+                    <h2 class="premium-title">New Bill Entry</h2>
+                    <p class="premium-subtitle">Synchronizing to Expedition Feed</p>
                 </div>
-                <div class="input-row">
-                    <div class="input-group">
-                        <label>Amount (₹)</label>
-                        <input type="number" id="exp-amount" placeholder="0" required>
+                <div class="live-telemetry-chip">
+                    <span id="live-split-preview">₹0.00 / Person</span>
+                </div>
+            </div>
+        
+            <form id="expense-form" class="smart-form-engine">
+                <div class="form-section-modern">
+                    <label class="logic-label">Bill Description</label>
+                    <div class="input-stack-premium">
+                        <div class="icon-indicator" id="desc-icon-box"><i data-lucide="tag"></i></div>
+                        <div class="field-logic">
+                            <input type="text" id="exp-title" placeholder="What was this for?" required oninput="Logic.updateSmartIcon(this.value)">
+                        </div>
                     </div>
-                    <div class="input-group">
-                        <label>Category</label>
-                        <select id="exp-category">
-                            <option value="Food">Food</option>
-                            <option value="Travel">Travel</option>
-                            <option value="Stay">Stay</option>
-                            <option value="Others">Others</option>
-                        </select>
+                </div>
+
+                <div class="form-section-modern">
+                    <label class="logic-label">Classification</label>
+                    <div class="category-grid-modern">
+                        <button type="button" class="cat-tab active" onclick="selectCategory('Food', this)"><i data-lucide="utensils"></i><span>Food</span></button>
+                        <button type="button" class="cat-tab" onclick="selectCategory('Travel', this)"><i data-lucide="car"></i><span>Travel</span></button>
+                        <button type="button" class="cat-tab" onclick="selectCategory('Stay', this)"><i data-lucide="hotel"></i><span>Stay</span></button>
+                        <button type="button" class="cat-tab" onclick="selectCategory('Others', this)"><i data-lucide="box"></i><span>Others</span></button>
+                    </div>
+                    <input type="hidden" id="exp-category" value="Food">
+                </div>
+
+                <div class="form-section-modern">
+                    <div class="label-row-flex">
+                        <label class="logic-label">Squad Included (Tap to toggle)</label>
+                        <button type="button" class="action-link-sm" onclick="Logic.selectAllSquad()">Select All</button>
+                    </div>
+                    <div id="member-inclusion-list" class="squad-scroll-engine">
+                        </div>
+                    <p class="input-hint">The amount will be split among selected members.</p>
+                </div>
+
+                <div class="form-section-modern">
+                    <label class="logic-label">Total Value (₹)</label>
+                    <div class="money-input-field">
+                        <span class="currency-symbol-modern">₹</span>
+                        <input type="number" id="exp-amount" placeholder="0.00" step="any" required oninput="Logic.updateLiveSplit()">
                     </div>
                 </div>
-                <div class="input-group">
-                    <label>Who Paid?</label>
-                    <select id="exp-payer"></select>
+
+                <div class="form-section-modern">
+                    <label class="logic-label">Payer Identity</label>
+                    <div class="payer-select-box">
+                        <i data-lucide="credit-card" class="payer-icon"></i>
+                        <select id="exp-payer" required></select>
+                    </div>
                 </div>
-                <div class="input-group">
-                    <label>Split Between</label>
-                    <div id="split-participants" class="checkbox-grid"></div>
-                </div>
-                <div class="modal-btns">
-                    <button type="button" class="btn btn-white" onclick="closeModal('expenseModal')">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Save Activity</button>
+
+                <div class="modal-footer-actions">
+                    <button type="button" class="btn-cancel-luxury" onclick="closeModal('expenseModal')">Discard</button>
+                    <button type="submit" class="btn-sync-luxury">
+                        <span>Sync Expense</span>
+                        <i data-lucide="chevron-right"></i>
+                    </button>
                 </div>
             </form>
         </div>
     </div>
 
-    <div class="modal" id="userProfileModal">
-        <div class="modal-content">
-            <div class="modal-handle"></div>
-            <div id="user-profile-header"></div>
-            <div class="tab-container" style="margin-top: 1.5rem;">
-                <p class="stat-label">Transaction History</p>
-                <div id="user-transaction-history" class="history-list"></div>
-            </div>
-            <div class="modal-btns">
-                <button class="btn btn-primary" style="width: 100%; justify-content: center;" onclick="closeModal('userProfileModal')">Close View</button>
-            </div>
-        </div>
-    </div>
-
     <div class="modal" id="memberModal">
-        <div class="modal-content">
-            <h2 style="font-weight: 900; margin-bottom: 1.5rem;">Add Trip Member</h2>
-            <div class="input-group">
-                <label>Friend's Name</label>
-                <input type="text" id="new-member-name" placeholder="Enter name...">
+        <div class="modal-content luxury-solid-card" style="max-width: 380px;">
+            <div class="modal-handle-bar"></div>
+            <h2 class="premium-title">Register Participant</h2>
+            <p class="premium-subtitle" style="margin-bottom: 20px;">Enrolling new subject to TripCart Squad</p>
+            <div class="input-stack-premium">
+                <div class="icon-indicator"><i data-lucide="user-plus"></i></div>
+                <div class="field-logic"><input type="text" id="new-member-name" placeholder="Full Name" required></div>
             </div>
-            <div class="modal-btns">
-                <button class="btn btn-white" onclick="closeModal('memberModal')">Cancel</button>
-                <button class="btn" style="background:var(--success); color:white;" onclick="submitNewMember()">Add to Group</button>
+            <div class="modal-footer-actions" style="margin-top: 25px;">
+                <button class="btn-cancel-luxury" onclick="closeModal('memberModal')">Cancel</button>
+                <button class="btn-sync-luxury" onclick="Logic.submitMember()">Enroll</button>
             </div>
         </div>
     </div>
 
     <script src="script.js"></script>
+    <script>
+        // System Initiation
+        window.addEventListener('DOMContentLoaded', () => {
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        });
+    </script>
 </body>
 </html>
