@@ -2555,3 +2555,889 @@ body.bg-profile::before {
     gap: 10px;
     box-shadow: 0 10px 25px rgba(59, 130, 246, 0.3);
 }
+
+
+
+/* ================================================================
+   TRIPCART PLATINUM v25.0 | MASTER STYLESHEET
+   Architecture: Hybrid Atomic-Modular (HAM)
+   Updated: 2026 Katra Expedition Edition
+   ================================================================ */
+
+/* --- 1. CORE SYSTEM VARIABLES --- */
+:root {
+    --p-h: 221; --p-s: 83%; --p-l: 53%;
+    --primary: hsl(var(--p-h), var(--p-s), var(--p-l));
+    --primary-dark: hsl(var(--p-h), var(--p-s), 40%);
+    --primary-soft: hsl(var(--p-h), var(--p-s), 96%);
+    --primary-glass: hsla(var(--p-h), var(--p-s), var(--p-l), 0.1);
+    
+    --bg-dark: #0f172a;
+    --bg-surface: #ffffff;
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    
+    --radius-md: 16px;
+    --radius-xl: 32px;
+    
+    --shadow-p: 0 10px 25px -3px hsla(var(--p-h), var(--p-s), var(--p-l), 0.3);
+    --transition-bounce: 500ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* --- 2. LUXURY AMBIENT ENGINE --- */
+body {
+    background: #f8fafc;
+    color: var(--text-main);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    margin: 0;
+    overflow-x: hidden;
+    min-height: 100vh;
+}
+
+/* Dynamic Background Blurs */
+body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    filter: blur(100px);
+    opacity: 0.5;
+    background: radial-gradient(circle at 10% 20%, #3b82f6 0%, #a855f7 30%, #f8fafc 70%);
+}
+
+/* --- 3. LAYOUT ARCHITECTURE --- */
+.main-content {
+    margin-left: 300px;
+    padding: 3rem;
+    transition: all 0.3s ease;
+}
+
+@media (max-width: 1024px) {
+    .main-content { margin-left: 0; padding: 1.5rem 1rem 120px; }
+    .sidebar { display: none; }
+}
+
+/* --- 4. BENTO GRID & LUXURY CARDS --- */
+.premium-quad-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr 0.8fr;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.luxury-card {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: var(--radius-xl);
+    padding: 2rem;
+    box-shadow: 0 10px 30px -10px rgba(0,0,0,0.05);
+    transition: var(--transition-bounce);
+}
+
+.primary-gradient {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%) !important;
+    color: white !important;
+}
+
+/* --- 5. THE ULTIMATE MODAL (SOLID PREMIUM) --- */
+.modal-content.luxury-solid-card {
+    background: #ffffff !important;
+    border-radius: 32px 32px 0 0 !important;
+    padding: 30px !important;
+    box-shadow: 0 -20px 60px rgba(0, 0, 0, 0.15) !important;
+    border: none !important;
+    max-width: 500px;
+    width: 100%;
+}
+
+/* Money Input Logic */
+.money-input-field {
+    background: #0f172a;
+    border-radius: 20px;
+    padding: 15px 25px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    box-shadow: inset 0 2px 10px rgba(0,0,0,0.2);
+}
+
+.money-input-field input {
+    background: transparent;
+    border: none;
+    color: #ffffff;
+    font-size: 2.2rem;
+    font-weight: 900;
+    width: 100%;
+    outline: none;
+    font-family: 'Inter', monospace;
+}
+
+/* --- 6. SQUAD ENGINE (MOBILE OPTIMIZED) --- */
+.squad-scroll-engine {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    padding: 10px 0;
+    scrollbar-width: none; /* Firefox */
+}
+
+.squad-scroll-engine::-webkit-scrollbar { display: none; } /* Chrome/Safari */
+
+.squad-chip {
+    flex: 0 0 auto;
+    padding: 12px 20px;
+    background: #f8fafc;
+    border: 1.5px solid #f1f5f9;
+    border-radius: 18px;
+    font-weight: 700;
+    color: #64748b;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.squad-chip.selected {
+    background: #0f172a;
+    color: white;
+    border-color: #0f172a;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+}
+
+/* --- 7. TIMELINE & ACTIVITY FEED --- */
+.timeline-style {
+    position: relative;
+    border-left: 2px solid #f1f5f9;
+    margin-left: 1rem;
+    padding-left: 1.5rem;
+}
+
+.activity-item {
+    background: white;
+    border-radius: var(--radius-md);
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+    border: 1px solid #f1f5f9;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+}
+
+.activity-item::before {
+    content: '';
+    position: absolute;
+    left: -1.9rem;
+    top: 50%;
+    width: 10px; height: 10px;
+    background: white;
+    border: 2px solid var(--primary);
+    border-radius: 50%;
+}
+
+/* --- 8. NAVIGATION (SIDEBAR & MOBILE) --- */
+.mobile-nav {
+    display: flex;
+    position: fixed;
+    bottom: 20px; left: 20px; right: 20px;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(20px);
+    border-radius: 24px;
+    padding: 12px;
+    justify-content: space-around;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+    z-index: 2000;
+    border: 1px solid rgba(255,255,255,0.4);
+}
+
+.m-nav-item {
+    background: transparent; border: none;
+    display: flex; flex-direction: column; align-items: center;
+    gap: 4px; color: var(--text-muted); font-weight: 800;
+    font-size: 0.65rem; text-transform: uppercase;
+}
+
+.m-nav-item.active { color: var(--primary); }
+
+/* --- 9. ANIMATIONS & UTILS --- */
+@keyframes slideUp {
+    from { transform: translateY(100%); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.modal-content { animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+
+.pulse-icon::after {
+    content: ''; position: absolute; inset: 0;
+    border-radius: 50%; background: #10b981;
+    animation: pulse-ring 2s infinite;
+}
+
+@keyframes pulse-ring {
+    0% { transform: scale(1); opacity: 0.7; }
+    100% { transform: scale(2.5); opacity: 0; }
+}
+
+/* --- MODAL WRAPPER --- */
+.modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.7);
+    backdrop-filter: blur(8px);
+    z-index: 5000;
+    align-items: flex-end; /* Slides from bottom on mobile */
+    justify-content: center;
+}
+
+@media (min-width: 768px) {
+    .modal { align-items: center; padding: 20px; }
+}
+
+/* --- MODAL CARD --- */
+.luxury-solid-card {
+    background: #ffffff;
+    width: 100%;
+    max-width: 520px;
+    padding: 2rem;
+    border-radius: 32px 32px 0 0; /* Bottom sheet style */
+    box-shadow: 0 -20px 50px rgba(0,0,0,0.15);
+    max-height: 92vh;
+    overflow-y: auto;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (min-width: 768px) {
+    .luxury-solid-card { border-radius: 28px; }
+}
+
+/* --- HEADER & LIVE TAG --- */
+.modal-smart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1.5rem;
+}
+
+.premium-title { font-size: 1.4rem; font-weight: 900; color: #0f172a; margin: 0; }
+.premium-subtitle { font-size: 0.8rem; color: #94a3b8; font-weight: 600; margin-top: 2px; }
+
+.live-telemetry-chip {
+    background: #0f172a;
+    color: #fff;
+    padding: 6px 14px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 800;
+}
+
+/* --- CATEGORY TABS (4-Column Grid) --- */
+.category-grid-modern {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+
+.cat-tab {
+    background: #f8fafc;
+    border: 1.5px solid #f1f5f9;
+    padding: 12px 5px;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.cat-tab.active {
+    background: #eff6ff;
+    border-color: #3b82f6;
+    color: #3b82f6;
+}
+
+/* --- SQUAD SCROLL ENGINE --- */
+.squad-scroll-engine {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding: 10px 0;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+}
+
+.squad-chip {
+    flex: 0 0 auto;
+    padding: 10px 18px;
+    background: #f1f5f9;
+    border-radius: 14px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #475569;
+    transition: 0.2s;
+}
+
+.squad-chip.selected {
+    background: #1e293b;
+    color: white;
+}
+
+/* --- TWO-COLUMN ROW (DESKTOP ONLY) --- */
+.form-row-split {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+}
+
+@media (min-width: 600px) {
+    .form-row-split { grid-template-columns: 1.2fr 1fr; }
+}
+
+/* --- MONEY INPUT --- */
+.money-input-field {
+    background: #0f172a;
+    border-radius: 18px;
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.currency-symbol-modern { color: #3b82f6; font-size: 1.4rem; font-weight: 900; }
+
+.money-input-field input {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 1.6rem;
+    font-weight: 900;
+    width: 100%;
+    outline: none;
+}
+
+/* --- ACTION BUTTONS --- */
+.modal-footer-actions {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 12px;
+    margin-top: 2rem;
+}
+
+.btn-sync-luxury {
+    background: #3b82f6;
+    color: white;
+    border: none;
+    border-radius: 16px;
+    height: 54px;
+    font-weight: 800;
+    font-size: 1rem;
+    box-shadow: 0 10px 20px rgba(59, 130, 246, 0.2);
+}
+
+.btn-cancel-luxury {
+    background: #f1f5f9;
+    border: none;
+    border-radius: 16px;
+    font-weight: 700;
+    color: #64748b;
+}
+
+/* --- UTILS --- */
+.logic-label { font-size: 0.7rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; display: block; }
+.label-row-flex { display: flex; justify-content: space-between; align-items: center; }
+.action-link-sm { background: none; border: none; color: #3b82f6; font-size: 0.75rem; font-weight: 800; cursor: pointer; }
+.input-hint { font-size: 0.7rem; color: #94a3b8; margin-top: 6px; font-weight: 500; }
+.modal-handle { width: 40px; height: 5px; background: #e2e8f0; border-radius: 10px; margin: -10px auto 20px auto; }
+
+/* --- BENTO GRID RESPONSIVENESS --- */
+.premium-quad-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* Desktop default */
+    gap: 1.25rem;
+}
+
+@media (max-width: 768px) {
+    .premium-quad-grid {
+        grid-template-columns: repeat(2, 1fr); /* 2 columns on mobile */
+        gap: 0.75rem;
+    }
+
+    /* Make Total Spend take the top row entirely */
+    .stat-card.primary-gradient {
+        grid-column: span 2;
+        padding: 1.5rem;
+    }
+
+    /* Font Scaling for Mobile to prevent overflow */
+    .stat-value {
+        font-size: 2.2rem !important; /* Slightly smaller for mobile */
+    }
+
+    .stat-value-mid {
+        font-size: 1.4rem !important;
+    }
+
+    .stat-label {
+        font-size: 0.65rem !important;
+        letter-spacing: 0.5px;
+    }
+}
+
+/* --- DESIGN POLISH --- */
+.stat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.verified-badge {
+    font-size: 0.6rem;
+    background: rgba(255,255,255,0.2);
+    padding: 2px 8px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.progress-mini-container {
+    height: 4px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 10px;
+    margin-top: 1rem;
+    overflow: hidden;
+}
+
+.progress-bar {
+    height: 100%;
+    background: #fff;
+    box-shadow: 0 0 10px rgba(255,255,255,0.5);
+}
+
+/* --- TRIPCART PLATINUM FLOATING PLATE NAV --- */
+:root {
+    --nav-bg: rgba(15, 23, 42, 0.8);
+    --nav-glass: blur(24px) saturate(210%);
+    --nav-border: rgba(255, 255, 255, 0.08);
+    --active-gradient: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+}
+
+.mobile-nav {
+    display: none; /* Hidden on Desktop */
+}
+
+@media (max-width: 1024px) {
+    .mobile-nav {
+        display: flex;
+        position: fixed;
+        bottom: 30px; /* Floating away from bottom edge */
+        left: 20px;
+        right: 20px;
+        height: 74px;
+        background: var(--nav-bg);
+        backdrop-filter: var(--nav-glass);
+        -webkit-backdrop-filter: var(--nav-glass);
+        border: 1px solid var(--nav-border);
+        border-radius: 28px; /* Ultra-rounded pill shape */
+        padding: 0 10px;
+        justify-content: space-around;
+        align-items: center;
+        box-shadow: 
+            0 20px 40px rgba(0, 0, 0, 0.4),
+            inset 0 1px 1px rgba(255, 255, 255, 0.1);
+        z-index: 5000;
+        transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .m-nav-item {
+        position: relative;
+        flex: 1;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: transparent;
+        border: none;
+        color: #94a3b8;
+        gap: 6px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    /* The Animated Active "Glow" Indicator */
+    .m-nav-item.active {
+        color: #fff;
+    }
+
+    .m-nav-item.active i {
+        transform: translateY(-4px);
+        color: #fff;
+        filter: drop-shadow(0 0 8px rgba(168, 85, 247, 0.8));
+    }
+
+    .m-nav-item.active::after {
+        content: '';
+        position: absolute;
+        bottom: 12px;
+        width: 6px;
+        height: 6px;
+        background: #a855f7;
+        border-radius: 50%;
+        box-shadow: 0 0 12px #a855f7;
+        animation: activePulse 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .m-nav-item i {
+        width: 22px;
+        height: 22px;
+        transition: transform 0.3s ease, color 0.3s ease;
+    }
+
+    .m-nav-item span {
+        font-size: 0.65rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        opacity: 0.7;
+    }
+
+    .m-nav-item.active span {
+        opacity: 1;
+        color: #fff;
+    }
+}
+
+/* Entry Animation for the Plate */
+@keyframes slideUpPlate {
+    from { transform: translateY(100px) scale(0.9); opacity: 0; }
+    to { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+.mobile-nav {
+    animation: slideUpPlate 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Pulse for the active dot */
+@keyframes activePulse {
+    0% { transform: scale(0); }
+    100% { transform: scale(1); }
+}
+
+/* Hide Nav when modal is open to keep UI clean */
+body.modal-open .mobile-nav {
+    transform: translateY(150px);
+}
+
+/* --- 1. DESKTOP SIDEBAR (Static) --- */
+.sidebar {
+    width: 300px;
+    background: var(--bg-surface);
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding: 2.5rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid var(--border-base);
+    z-index: 1000;
+}
+
+/* --- 2. MOBILE FLOATING PLATE (Responsive) --- */
+/* We hide it by default for desktop */
+.mobile-nav {
+    display: none;
+}
+
+/* --- 3. THE "SUPERB" MOBILE MEDIA QUERY --- */
+@media (max-width: 1024px) {
+    /* Hide the sidebar on mobile to make room */
+    .sidebar {
+        display: none !important;
+    }
+
+    /* Shift main content to full width since sidebar is gone */
+    .main-content {
+        margin-left: 0 !important;
+        width: 100% !important;
+        padding-bottom: 120px !important; /* Space so content isn't hidden by the floating bar */
+    }
+
+    /* THE FLOATING PLATE REVEAL */
+    .mobile-nav {
+        display: flex; /* Show only on mobile */
+        position: fixed;
+        bottom: 30px; 
+        left: 20px;
+        right: 20px;
+        height: 74px;
+        background: rgba(255, 255, 255, 0.75); /* Frosted Glass */
+        backdrop-filter: blur(25px) saturate(200%);
+        -webkit-backdrop-filter: blur(25px) saturate(200%);
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        border-radius: 28px;
+        padding: 0 10px;
+        justify-content: space-around;
+        align-items: center;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        z-index: 5000;
+        animation: slideUpPlate 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .m-nav-item {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: transparent;
+        border: none;
+        color: #94a3b8;
+        gap: 5px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Active State: Floating Glow */
+    .m-nav-item.active {
+        color: #3b82f6; /* TripCart Blue */
+        transform: translateY(-5px);
+    }
+
+    .m-nav-item.active i {
+        filter: drop-shadow(0 0 8px rgba(59, 130, 246, 0.5));
+    }
+
+    .m-nav-item span {
+        font-size: 0.6rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+}
+
+/* --- 4. ANIMATIONS --- */
+@keyframes slideUpPlate {
+    from { transform: translateY(100px) scale(0.9); opacity: 0; }
+    to { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+/* ================================================================
+   TRIPCART PLATINUM: AURORA FLOATING PLATE v25.0.9
+   ================================================================ */
+
+:root {
+    /* Aurora System Colors */
+    --nav-bg: #0f172a; /* Deep Slate/Sapphire */
+    --nav-border: rgba(99, 102, 241, 0.3); /* Indigo Glow */
+    --accent-aurora: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
+    --active-text: #ffffff;
+    --inactive-text: #64748b;
+}
+
+/* 1. Desktop Neutralization (Hide Sidebar on Mobile / Hide Nav on Desktop) */
+.mobile-nav {
+    display: none;
+}
+
+@media (max-width: 1024px) {
+    /* THE SUPERB COLORED FLOATING PLATE */
+    .mobile-nav {
+        display: flex;
+        position: fixed;
+        bottom: 30px; 
+        left: 20px;
+        right: 20px;
+        height: 76px;
+        
+        /* High-Impact Colorful Base */
+        background: var(--nav-bg);
+        border: 2px solid var(--nav-border);
+        border-radius: 30px;
+        padding: 0 15px;
+        justify-content: space-around;
+        align-items: center;
+        
+        /* Multi-Layered Glow Shadow */
+        box-shadow: 
+            0 15px 35px rgba(0, 0, 0, 0.4),
+            0 0 15px rgba(99, 102, 241, 0.2),
+            inset 0 1px 1px rgba(255, 255, 255, 0.1);
+            
+        z-index: 5000;
+        animation: auroraSlideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    /* Navigation Items */
+    .m-nav-item {
+        position: relative;
+        flex: 1;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: transparent;
+        border: none;
+        color: var(--inactive-text);
+        gap: 4px;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    /* Active State: The Aurora Explosion */
+    .m-nav-item.active {
+        color: var(--active-text);
+    }
+
+    /* Icon Neon Glow */
+    .m-nav-item.active i {
+        transform: translateY(-10px) scale(1.2);
+        background: var(--accent-aurora);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        filter: drop-shadow(0 0 12px rgba(168, 85, 247, 0.6));
+    }
+
+    /* The Animated Under-Glow Pill */
+    .m-nav-item.active::before {
+        content: '';
+        position: absolute;
+        bottom: 12px;
+        width: 35px;
+        height: 4px;
+        background: var(--accent-aurora);
+        border-radius: 10px;
+        box-shadow: 0 0 15px rgba(168, 85, 247, 0.8);
+        animation: pillExpand 0.4s ease-out;
+    }
+
+    .m-nav-item span {
+        font-size: 0.6rem;
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        opacity: 0.5;
+        transition: 0.3s;
+    }
+
+    .m-nav-item.active span {
+        opacity: 1;
+        transform: translateY(2px);
+        background: var(--accent-aurora);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+}
+
+/* --- ANIMATION ORCHESTRATION --- */
+@keyframes auroraSlideUp {
+    from { 
+        transform: translateY(120px) rotateX(20deg); 
+        opacity: 0; 
+    }
+    to { 
+        transform: translateY(0) rotateX(0deg); 
+        opacity: 1; 
+    }
+}
+
+@keyframes pillExpand {
+    0% { width: 0; opacity: 0; }
+    100% { width: 35px; opacity: 1; }
+}
+
+/* ================================================================
+   TRIPCART PLATINUM: AURORA FLOATING PLATE v25.0.9 (COLOR EDIT)
+   ================================================================ */
+
+:root {
+    --nav-bg: #0f172a; /* Deep Sapphire Base */
+    --accent-aurora: linear-gradient(135deg, #6366f1 0%, #a855f7 50%, #ec4899 100%);
+    --inactive-text: #64748b;
+}
+
+@media (max-width: 1024px) {
+    .mobile-nav {
+        display: flex;
+        position: fixed;
+        bottom: 30px; 
+        left: 20px;
+        right: 20px;
+        height: 76px;
+        background: var(--nav-bg);
+        border: 2px solid rgba(99, 102, 241, 0.2);
+        border-radius: 30px;
+        padding: 0 15px;
+        justify-content: space-around;
+        align-items: center;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+        z-index: 5000;
+        animation: auroraSlideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .m-nav-item {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        background: transparent;
+        border: none;
+    }
+
+    /* --- THE SUPERB COLOR TEXT LOGIC --- */
+    .m-nav-item span {
+        font-size: 0.65rem;
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: var(--inactive-text); /* Inactive color */
+        transition: all 0.3s ease;
+    }
+
+    /* Active State: Text Gradient Reveal */
+    .m-nav-item.active span {
+        /* Apply Aurora Gradient to Text */
+        background: var(--accent-aurora);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        
+        /* Subtle Lift & Glow */
+        transform: translateY(2px);
+        opacity: 1;
+        filter: drop-shadow(0 0 5px rgba(168, 85, 247, 0.4));
+    }
+
+    /* Active State: Icon Gradient Reveal */
+    .m-nav-item.active i {
+        transform: translateY(-10px) scale(1.2);
+        background: var(--accent-aurora);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        filter: drop-shadow(0 0 12px rgba(168, 85, 247, 0.6));
+    }
+
+    /* Active Indicator (Glowing Pill) */
+    .m-nav-item.active::before {
+        content: '';
+        position: absolute;
+        bottom: 10px;
+        width: 30px;
+        height: 3px;
+        background: var(--accent-aurora);
+        border-radius: 10px;
+        box-shadow: 0 0 15px rgba(168, 85, 247, 0.8);
+    }
+}
+
+/* Entry Animation */
+@keyframes auroraSlideUp {
+    from { transform: translateY(120px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
