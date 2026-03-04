@@ -13,7 +13,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <script src="https://unpkg.com/lucide@latest"></script>
-    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html-to-image/1.11.11/html-to-image.min.js"></script>
     
     <link rel="stylesheet" href="style.css">
@@ -71,32 +70,29 @@
 
         <section id="dashboard-section" class="section-content">
             <div class="stats-grid premium-quad-grid">
-                <div class="stat-card luxury-card primary-gradient">
+                <div class="stat-card primary-gradient">
                     <div class="card-glass-overlay"></div>
-                    <p class="stat-label">Total Spend</p>
-                    <div class="stat-value" id="total-expense-val">₹0</div>
-                    <div class="card-footer-mini">TripCart Verified</div>
-                </div>
-
-                <div class="stat-card luxury-card">
-                    <div class="card-header-flex">
-                        <p class="stat-label">Daily Velocity</p>
-                        <i data-lucide="trending-up" class="icon-tiny text-get"></i>
+                    <div class="stat-header">
+                        <p class="stat-label">Total Spend</p>
+                        <span class="verified-badge"><i data-lucide="shield-check"></i> Verified</span>
                     </div>
-                    <div class="stat-value-mid" id="daily-velocity-val">₹0</div>
-                    <div class="stat-sub-text">Average per day</div>
-                    <div class="sparkline-mini">
-                        <div class="spark-dot"></div>
-                        <div class="spark-dot"></div>
-                        <div class="spark-dot active"></div>
+                    <div class="stat-value" id="total-expense-val">₹971</div>
+                    <div class="progress-mini-container">
+                        <div class="progress-bar" style="width: 65%"></div>
                     </div>
                 </div>
 
                 <div class="stat-card luxury-card">
-                    <p class="stat-label">Lead Spender</p>
+                    <p class="stat-label">Velocity</p>
+                    <div class="stat-value-mid" id="daily-velocity-val">₹486</div>
+                    <p class="stat-sub-text">Avg / Day</p>
+                </div>
+
+                <div class="stat-card luxury-card">
+                    <p class="stat-label">Lead</p>
                     <div class="spender-profile">
-                        <div class="mini-avatar primary-gradient" id="top-spender-avatar">?</div>
-                        <div class="stat-value-sm" id="top-spender-name">None</div>
+                        <div class="mini-avatar primary-gradient" id="top-spender-avatar">A</div>
+                        <div class="stat-value-sm" id="top-spender-name">Akhil</div>
                     </div>
                 </div>
 
@@ -155,7 +151,6 @@
     <div class="modal" id="expenseModal">
         <div class="modal-content luxury-solid-card">
             <div class="modal-handle-bar"></div>
-            
             <div class="modal-smart-header">
                 <div class="modal-title-zone">
                     <h2 class="premium-title">New Bill Entry</h2>
@@ -190,12 +185,11 @@
 
                 <div class="form-section-modern">
                     <div class="label-row-flex">
-                        <label class="logic-label">Squad Included (Tap to toggle)</label>
+                        <label class="logic-label">Squad Included</label>
                         <button type="button" class="action-link-sm" onclick="Logic.selectAllSquad()">Select All</button>
                     </div>
-                    <div id="member-inclusion-list" class="squad-scroll-engine">
-                        </div>
-                    <p class="input-hint">The amount will be split among selected members.</p>
+                    <div id="member-inclusion-list" class="squad-scroll-engine"></div>
+                    <p class="input-hint">Amount split among selected members.</p>
                 </div>
 
                 <div class="form-section-modern">
@@ -216,10 +210,7 @@
 
                 <div class="modal-footer-actions">
                     <button type="button" class="btn-cancel-luxury" onclick="closeModal('expenseModal')">Discard</button>
-                    <button type="submit" class="btn-sync-luxury">
-                        <span>Sync Expense</span>
-                        <i data-lucide="chevron-right"></i>
-                    </button>
+                    <button type="submit" class="btn-sync-luxury">Sync Expense</button>
                 </div>
             </form>
         </div>
@@ -229,7 +220,6 @@
         <div class="modal-content luxury-solid-card" style="max-width: 380px;">
             <div class="modal-handle-bar"></div>
             <h2 class="premium-title">Register Participant</h2>
-            <p class="premium-subtitle" style="margin-bottom: 20px;">Enrolling new subject to TripCart Squad</p>
             <div class="input-stack-premium">
                 <div class="icon-indicator"><i data-lucide="user-plus"></i></div>
                 <div class="field-logic"><input type="text" id="new-member-name" placeholder="Full Name" required></div>
@@ -243,7 +233,6 @@
 
     <script src="script.js"></script>
     <script>
-        // System Initiation
         window.addEventListener('DOMContentLoaded', () => {
             if (typeof lucide !== 'undefined') lucide.createIcons();
         });
